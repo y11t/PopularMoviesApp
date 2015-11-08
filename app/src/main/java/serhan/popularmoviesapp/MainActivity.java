@@ -1,5 +1,6 @@
 package serhan.popularmoviesapp;
 
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -20,6 +21,7 @@ public class MainActivity extends AppCompatActivity {
                     .add(R.id.container, new MainFragment())
                     .commit();
         }
+
     }
 
     @Override
@@ -38,6 +40,7 @@ public class MainActivity extends AppCompatActivity {
 
         //noinspection SimplifiableIfStatement
         if (id == R.id.action_settings) {
+            startActivity(new Intent(this,SettingsActivity.class));
             return true;
         }
 
