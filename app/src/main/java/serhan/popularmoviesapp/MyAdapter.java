@@ -9,7 +9,7 @@ import android.widget.ImageView;
 
 import com.squareup.picasso.Picasso;
 
-public class MyAdapter extends ArrayAdapter {
+public class MyAdapter extends ArrayAdapter {//TODO:handling information and image URLS here.
     private Context context;
     private LayoutInflater inflater;
 
@@ -30,6 +30,7 @@ public class MyAdapter extends ArrayAdapter {
             convertView = inflater.inflate(R.layout.listview_item_image, parent, false);
         }
 
+        //TODO:Optimize the Picasso views of the app. Sort the buggy look.
         Picasso
                 .with(context)
                 .load(imageUrls[position])
