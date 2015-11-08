@@ -5,8 +5,9 @@
     <string name="pref_sort_label">Sort</string>
     <string name="pref_sort_label_popular">Most Popular</string>
     <string name="pref_sort_label_rated">Highest Rated</string>
-    <string name="pref_sort_popular">popular</string>
-    <string name="pref_sort_rated">rated</string>
+    <string name="pref_sort_popular">popularity.desc</string>
+    <string name="pref_sort_rated">vote_average.desc</string>
 
     <string name="title_activity_settings">Settings</string>
+    <string name="pref_sort_default">popularity.desc</string>
 </resources>

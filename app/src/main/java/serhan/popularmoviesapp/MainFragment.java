@@ -1,8 +1,10 @@
 package serhan.popularmoviesapp;
 
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
@@ -22,6 +24,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 
 /**
  * A placeholder fragment containing a simple view.
@@ -31,7 +34,7 @@ public class MainFragment extends Fragment {
     private GridView gridView;
     private MyAdapter myAdapter;
     private final String API_KEY = "c59e90221f3bbae2b5ec10d1d9d433a1";
-
+    private final String LOG_TAG = MainActivity.class.getSimpleName();
     public static String[] eatFoodyImages = {
             "http://i.imgur.com/rFLNqWI.jpg",
             "http://i.imgur.com/C9pBVt7.jpg",
@@ -66,9 +69,11 @@ public class MainFragment extends Fragment {
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
 
         gridView = (GridView) rootView.findViewById(R.id.gridview);
-
-        myAdapter = new MyAdapter(getActivity(),eatFoodyImages);
         //buraya AsyncTaskin outputu gelicek . cunku oda String[] outputu veriyor.
+        //gridView.setAdapter(new MyAdapter(getActivity(), eatFoodyImages));
+
+
+        myAdapter = new MyAdapter(getActivity(),new ArrayList<String>());
         gridView.setAdapter(myAdapter);
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
@@ -83,31 +88,72 @@ public class MainFragment extends Fragment {
         return rootView;
     }
 
+    private void updateMovie(){
+        FetchMovieTask movieTask = new FetchMovieTask();  //initiate FetchWeatherTask
+        //removed the hardcoded weatherTask.execute("94043") here
+        SharedPreferences prefs = PreferenceManager.getDefaultSharedPreferences(getActivity());
+        String sort = prefs.getString(getString(R.string.pref_sort_key),getString(R.string.pref_sort_popular));
+        movieTask.execute(sort);
+        Log.v(LOG_TAG, "params " + sort.toString());
+    }
+
+    @Override
+    public void onStart(){
+        super.onStart();
+        updateMovie();
+    }
+
     public class FetchMovieTask extends AsyncTask<String,Void,String[]>{
 
-        private final String LOG_TAG = MainActivity.class.getSimpleName();
 
-        private String formatSort(String sortType){    //for the popular and highest rated function
-            if(sortType.equals(getString(R.string.pref_sort_popular))){
-                //TODO: Order the sorting functions here
-            }else if(!sortType.equals(getString(R.string.pref_sort_rated))){
-                Log.d(LOG_TAG, "Sort type not found: " + sortType);
-            }
-        }
 
-        private String[] getMovieDataFromJson(String movieJsonStr , int numMovies){
+        private String[] getMovieDataFromJson (String movieJsonStr , int numMovies) throws JSONException {
 
-            final String OWM_LIST = "list";
-            final String OWM_WEATHER = "weather";
-            final String OWM_TEMPERATURE = "temp";
-            final String OWM_MAX = "max";
-            final String OWM_MIN = "min";
+            final String OWM_RESULTS = "results";
+            final String OWM_TITLE = "title";
+            final String OWM_ORIGINAL_TITLE = "original_title";
+            final String OWM_RELEASE_DATE = "release_date";
+            final String OWM_POSTER = "poster_path";
+            final String OWM_POPULARITY = "popularity";
+            final String OWM_RANKING = "vote_average";
             final String OWM_DESCRIPTION = "main";
 
             JSONObject movieJson = new JSONObject(movieJsonStr);
-            JSONArray movieArray = movieJson.getJSONArray(OWM_LIST);
+            JSONArray movieArray = movieJson.getJSONArray(OWM_RESULTS);
             //TODO: Fetching Data from the constructed URL , fetching movie details
+            String[] resultStrs = new String[numMovies];
+
+            SharedPreferences sharedPrefs =
+                    PreferenceManager.getDefaultSharedPreferences(getActivity());
+            String sortType = sharedPrefs.getString(
+                    getString(R.string.pref_sort_key),
+                    getString(R.string.pref_sort_popular));
+
+            for(int i = 0; i < movieArray.length(); i++) {
+                // For now, using the format "Day, description, hi/low"
+
+                String poster;
+
+                // Get the JSON object representing the day
+                JSONObject movieForecast = movieArray.getJSONObject(i);
+                poster = movieForecast.getString(OWM_POSTER);
+                // description is in a child array called "weather", which is 1 element long.
+                //JSONObject movieObject = movieForecast.getJSONObject(0);
+                //poster = movieObject.getString(OWM_POSTER);
+                // Temperatures are in a child object called "temp".  Try not to name variables
+                // "temp" when working with temperature.  It confuses everybody.
+
+
+
+                resultStrs[i] = "http://image.tmdb.org/t/p/w185/"+poster;
+                ;
+            }
+
+            for (String s : resultStrs) {
+                Log.v(LOG_TAG, "Forecast entry: " + s);
+            }
             return resultStrs;
+
         }
 
         protected String[] doInBackground(String... params){
@@ -124,28 +170,24 @@ public class MainFragment extends Fragment {
             // Will contain the raw JSON response as a string.
             String movieJsonStr = null;
 
-            String format = "json";
+
             String sort = "popular";
-            int numMovies = 7;
+
+            int numMovies = 20;
 
             try {   //TODO: Construct the URL for the theMovieDB query
 
                 // Possible parameters are avaiable at OWM's forecast API page, at
 
                 final String FORECAST_BASE_URL =
-                        "http://api.openweathermap.org/data/2.5/forecast/daily?";
-                final String QUERY_PARAM = "q";
-                final String FORMAT_PARAM = "mode";
-                final String UNITS_PARAM = "units";
-                final String DAYS_PARAM = "cnt";
-                final String APPID_PARAM = "APPID";
+                        "http://api.themoviedb.org/3/discover/movie?";
+                final String SORT_PARAM = "sort_by";
+                final String APPID_PARAM = "api_key";
 
                 Uri builtUri = Uri.parse(FORECAST_BASE_URL).buildUpon()
-                        .appendQueryParameter(QUERY_PARAM, params[0])       //WE READ THE PASSED PARAM HERE.
-                        .appendQueryParameter(FORMAT_PARAM, format)
-                        .appendQueryParameter(UNITS_PARAM, units)
-                        .appendQueryParameter(DAYS_PARAM, Integer.toString(numDays))
-                        .appendQueryParameter(APPID_PARAM, BuildConfig.OPEN_WEATHER_MAP_API_KEY)
+                        .appendQueryParameter(SORT_PARAM,params[0])       //WE READ THE PASSED PARAM HERE.
+                        //.appendQueryParameter(PAGE_PARAM, Integer.toString(numMovies))
+                        .appendQueryParameter(APPID_PARAM, BuildConfig.MOVIES_API_KEY)
                         .build();
 
                 URL url = new URL(builtUri.toString());
@@ -214,9 +256,11 @@ public class MainFragment extends Fragment {
         protected void onPostExecute (String[] result){ //TODO:Handle adding elements to the MyAdapter
 
             if(result!=null){
-                myAdapter.clear();           //result 0 a esit degilse , mock datayi siliyoruz.
-                for (String dayForecastStr : result){   //yerine dayForecastStr'yi koyuyoruz .
-                    myAdapter.add(dayForecastStr);   //ve Adaptore ekliyoruz.
+                myAdapter.clear();
+                           //result 0 a esit degilse , mock datayi siliyoruz.
+                //yerine dayForecastStr'yi koyuyoruz .
+                for (String movieStr : result) {
+                    myAdapter.add(movieStr);
                 }
 
             }
