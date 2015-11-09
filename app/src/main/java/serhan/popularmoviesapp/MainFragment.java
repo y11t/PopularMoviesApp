@@ -1,5 +1,6 @@
 package serhan.popularmoviesapp;
 
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
@@ -33,24 +34,9 @@ public class MainFragment extends Fragment {
 
     private GridView gridView;
     private MyAdapter myAdapter;
-    private final String API_KEY = "c59e90221f3bbae2b5ec10d1d9d433a1";
+    //private final String API_KEY = "c59e90221f3bbae2b5ec10d1d9d433a1";
     private final String LOG_TAG = MainActivity.class.getSimpleName();
-    public static String[] eatFoodyImages = {
-            "http://i.imgur.com/rFLNqWI.jpg",
-            "http://i.imgur.com/C9pBVt7.jpg",
-            "http://i.imgur.com/rT5vXE1.jpg",
-            "http://i.imgur.com/aIy5R2k.jpg",
-            "http://i.imgur.com/MoJs9pT.jpg",
-            "http://i.imgur.com/S963yEM.jpg",
-            "http://i.imgur.com/rLR2cyc.jpg",
-            "http://i.imgur.com/SEPdUIx.jpg",
-            "http://i.imgur.com/aC9OjaM.jpg",
-            "http://i.imgur.com/76Jfv9b.jpg",
-            "http://i.imgur.com/fUX7EIB.jpg",
-            "http://i.imgur.com/syELajx.jpg",
-            "http://i.imgur.com/COzBnru.jpg",
-            "http://i.imgur.com/Z3QjilA.jpg",
-    };
+
 
     public MainFragment() {
     }
@@ -75,9 +61,15 @@ public class MainFragment extends Fragment {
 
         myAdapter = new MyAdapter(getActivity(),new ArrayList<String>());
         gridView.setAdapter(myAdapter);
+
         gridView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
+
+                String movie = (String) myAdapter.getItem(position);
+                Intent intent = new Intent(getActivity(), DetailActivity.class)
+                        .putExtra(Intent.EXTRA_TEXT, movie);
+                startActivity(intent);
                 Toast.makeText(getActivity(),
                         String.valueOf(position), Toast.LENGTH_SHORT).show();
             }
@@ -101,6 +93,7 @@ public class MainFragment extends Fragment {
     public void onStart(){
         super.onStart();
         updateMovie();
+
     }
 
     public class FetchMovieTask extends AsyncTask<String,Void,String[]>{
@@ -175,7 +168,7 @@ public class MainFragment extends Fragment {
 
             int numMovies = 20;
 
-            try {   //TODO: Construct the URL for the theMovieDB query
+            try {
 
                 // Possible parameters are avaiable at OWM's forecast API page, at
 
