@@ -56,10 +56,8 @@ public class DetailActivity extends AppCompatActivity {
             View rootView = inflater.inflate(R.layout.activity_detail, container, false);
             String image_url;
             //deneme textview
-
-            TextView textView = (TextView) rootView.findViewById(R.id.movie_original_title);
-            original_title = "Serhan";
-            textView.setText(original_title);
+            TextView textViews = (TextView) rootView.findViewById(R.id.movie_original_title);
+            textViews.setText(MainFragment.scale);
 
             movie_thumbnail = (ImageView) rootView.findViewById(R.id.movie_thumbnail);
             Intent intent = getActivity().getIntent();

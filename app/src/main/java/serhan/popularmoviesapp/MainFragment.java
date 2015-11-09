@@ -12,6 +12,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -32,8 +33,11 @@ import java.util.ArrayList;
  */
 public class MainFragment extends Fragment {
 
+    public static String scale;
     private GridView gridView;
     private MyAdapter myAdapter;
+    private ArrayAdapter<String> mMovieAdapter;
+    private ArrayList<String> mMovieArray;
     //private final String API_KEY = "c59e90221f3bbae2b5ec10d1d9d433a1";
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -57,8 +61,7 @@ public class MainFragment extends Fragment {
         gridView = (GridView) rootView.findViewById(R.id.gridview);
         //buraya AsyncTaskin outputu gelicek . cunku oda String[] outputu veriyor.
         //gridView.setAdapter(new MyAdapter(getActivity(), eatFoodyImages));
-
-
+        mMovieArray = new ArrayList<>();
         myAdapter = new MyAdapter(getActivity(),new ArrayList<String>());
         gridView.setAdapter(myAdapter);
 
@@ -66,14 +69,22 @@ public class MainFragment extends Fragment {
             public void onItemClick(AdapterView<?> parent, View v,
                                     int position, long id) {
 
+
                 String movie = (String) myAdapter.getItem(position);
+                scale =  mMovieArray.get(position);
+                Log.v("SDFSDFJKSDJF",scale);
                 Intent intent = new Intent(getActivity(), DetailActivity.class)
                         .putExtra(Intent.EXTRA_TEXT, movie);
+
                 startActivity(intent);
                 Toast.makeText(getActivity(),
                         String.valueOf(position), Toast.LENGTH_SHORT).show();
             }
         });
+
+
+
+
 
 
 
@@ -96,6 +107,13 @@ public class MainFragment extends Fragment {
 
     }
 
+    public String split(String regex,int i){
+             // full file name
+        String[] parts = regex.split("-"); // String array, each element is text between dots
+
+        return parts[i];
+    }
+
     public class FetchMovieTask extends AsyncTask<String,Void,String[]>{
 
 
@@ -109,13 +127,13 @@ public class MainFragment extends Fragment {
             final String OWM_POSTER = "poster_path";
             final String OWM_POPULARITY = "popularity";
             final String OWM_RANKING = "vote_average";
-            final String OWM_DESCRIPTION = "main";
+            final String OWM_OVERVIEW = "overview";
 
             JSONObject movieJson = new JSONObject(movieJsonStr);
             JSONArray movieArray = movieJson.getJSONArray(OWM_RESULTS);
             //TODO: Fetching Data from the constructed URL , fetching movie details
-            String[] resultStrs = new String[numMovies];
-
+            String[] resultURL = new String[numMovies];
+            String[] resultOVERVIEW = new String[numMovies];
             SharedPreferences sharedPrefs =
                     PreferenceManager.getDefaultSharedPreferences(getActivity());
             String sortType = sharedPrefs.getString(
@@ -126,10 +144,13 @@ public class MainFragment extends Fragment {
                 // For now, using the format "Day, description, hi/low"
 
                 String poster;
+                String overview;
 
                 // Get the JSON object representing the day
                 JSONObject movieForecast = movieArray.getJSONObject(i);
                 poster = movieForecast.getString(OWM_POSTER);
+                overview = movieForecast.getString(OWM_ORIGINAL_TITLE);
+
                 // description is in a child array called "weather", which is 1 element long.
                 //JSONObject movieObject = movieForecast.getJSONObject(0);
                 //poster = movieObject.getString(OWM_POSTER);
@@ -138,14 +159,14 @@ public class MainFragment extends Fragment {
 
 
 
-                resultStrs[i] = "http://image.tmdb.org/t/p/w185/"+poster;
-                ;
+                resultURL[i] = "http://image.tmdb.org/t/p/w185/"+poster+"-"+overview;
+
             }
 
-            for (String s : resultStrs) {
+            for (String s : resultURL) {
                 Log.v(LOG_TAG, "Forecast entry: " + s);
             }
-            return resultStrs;
+            return resultURL;
 
         }
 
@@ -248,13 +269,18 @@ public class MainFragment extends Fragment {
 
         protected void onPostExecute (String[] result){ //TODO:Handle adding elements to the MyAdapter
 
+
+
             if(result!=null){
                 myAdapter.clear();
+                mMovieArray.clear();
                            //result 0 a esit degilse , mock datayi siliyoruz.
                 //yerine dayForecastStr'yi koyuyoruz .
                 for (String movieStr : result) {
-                    myAdapter.add(movieStr);
+                    myAdapter.add(split(movieStr, 0));
+                    mMovieArray.add(split(movieStr,1));
                 }
+
 
             }
 
