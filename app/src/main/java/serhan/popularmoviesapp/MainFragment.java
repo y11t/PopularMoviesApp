@@ -38,8 +38,7 @@ public class MainFragment extends Fragment {
     private MyAdapter myAdapter;
 
 
-    private ArrayList<String> mMovieArray;
-    public static String scale;
+
     private ArrayList<String> mOverviewArray;
     public static String ove;
     private ArrayList<String> mRatingArray;
@@ -76,7 +75,7 @@ public class MainFragment extends Fragment {
         gridView = (GridView) rootView.findViewById(R.id.gridview);
         //buraya AsyncTaskin outputu gelicek . cunku oda String[] outputu veriyor.
         //gridView.setAdapter(new MyAdapter(getActivity(), eatFoodyImages));
-        mMovieArray = new ArrayList<>();
+
         mOverviewArray = new ArrayList<>();
         mRatingArray = new ArrayList<>();
         mDateArray = new ArrayList<>();
@@ -160,7 +159,9 @@ public class MainFragment extends Fragment {
 
             if( mOverviewArray != null) {
                 mOverviewArray.clear();
-
+                mTitleArray.clear();
+                mRatingArray.clear();
+                mDateArray.clear();
             }
             for(int i = 0; i < movieArray.length(); i++) {
                 // For now, using the format "Day, description, hi/low"
