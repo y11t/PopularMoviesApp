@@ -15,11 +15,11 @@
     android:gravity="center_horizontal">
 
     <TextView xmlns:android="http://schemas.android.com/apk/res/android"
-        android:layout_width="250dp"
+        android:layout_width="350dp"
         android:layout_height="wrap_content"
         android:minHeight="?android:attr/listPreferredItemHeight"
         android:id="@+id/movie_original_title"
-        android:textSize="30dp"
+        android:textSize="40dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
 
     <ImageView
@@ -35,20 +35,21 @@
         android:id="@+id/release_year"
         android:layout_width="match_parent"
         android:layout_height="50dp"
-        android:layout_toEndOf="@id/movie_thumbnail"
 
-        android:textSize="25dp"
+        android:layout_toRightOf="@id/movie_original_title"
+        android:textSize="35dp"
         android:textStyle="italic"
-        android:textAlignment="center" />
+        android:gravity="center_vertical|center_horizontal" />
     <TextView
         android:id="@+id/rating"
         android:layout_width="match_parent"
-        android:layout_height="50dp"
+        android:layout_height="40dp"
         android:layout_below="@id/release_year"
         android:layout_toEndOf="@id/movie_thumbnail"
-        android:textSize="40dp"
-        android:textStyle="bold"
-        android:textAlignment="center"
+        android:textSize="25dp"
+        android:textStyle="italic"
+        android:layout_marginRight="20dp"
+        android:gravity="center_vertical|right"
         android:textColor="#100cef" />
 
     <ScrollView
@@ -56,12 +57,14 @@
         android:layout_height="wrap_content"
         android:layout_below="@id/rating"
         android:layout_toEndOf="@id/movie_thumbnail"
+        android:layout_marginTop="10dp"
+        android:layout_marginLeft="10dp"
         >
         <TextView
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/synopsis"
-            android:textSize="20sp"
+            android:textSize="20dp"
             android:textColor="#e80a0a" />
     </ScrollView>
 

@@ -46,6 +46,8 @@ public class MainFragment extends Fragment {
     public static String rat;
     private ArrayList<String> mDateArray;
     public static String dat;
+    private ArrayList<String> mTitleArray;
+    public static String tit;
 
     //private final String API_KEY = "c59e90221f3bbae2b5ec10d1d9d433a1";
     private final String LOG_TAG = MainActivity.class.getSimpleName();
@@ -78,6 +80,7 @@ public class MainFragment extends Fragment {
         mOverviewArray = new ArrayList<>();
         mRatingArray = new ArrayList<>();
         mDateArray = new ArrayList<>();
+        mTitleArray = new ArrayList<>();
 
         myAdapter = new MyAdapter(getActivity(),new ArrayList<String>());
         gridView.setAdapter(myAdapter);
@@ -88,12 +91,12 @@ public class MainFragment extends Fragment {
 
 
                 String movie = (String) myAdapter.getItem(position);
-                scale =  mMovieArray.get(position);
+
                 ove =  mOverviewArray.get(position);
                 rat = mRatingArray.get(position);
                 dat = mDateArray.get(position);
+                tit = mTitleArray.get(position);
 
-                Log.v("SDFSDFJKSDJF", scale);
                 Intent intent = new Intent(getActivity(), DetailActivity.class)
                         .putExtra(Intent.EXTRA_TEXT, movie);
 
@@ -128,12 +131,6 @@ public class MainFragment extends Fragment {
 
     }
 
-    public String split(String regex,int i){
-             // full file name
-        String[] parts = regex.split("-"); // String array, each element is text between dots
-
-        return parts[i];
-    }
 
     public class FetchMovieTask extends AsyncTask<String,Void,String[]>{
 
@@ -191,8 +188,9 @@ public class MainFragment extends Fragment {
                 mOverviewArray.add(o);
                 mRatingArray.add(ranking);
                 mDateArray.add(release_date);
+                mTitleArray.add(original_title);
 
-                resultURL[i] = "http://image.tmdb.org/t/p/w185/"+poster+"-"+original_title;
+                resultURL[i] = "http://image.tmdb.org/t/p/w185/"+poster;
 
             }
 
@@ -306,12 +304,11 @@ public class MainFragment extends Fragment {
 
             if(result!=null){
                 myAdapter.clear();
-                mMovieArray.clear();
+
                            //result 0 a esit degilse , mock datayi siliyoruz.
                 //yerine dayForecastStr'yi koyuyoruz .
                 for (String movieStr : result) {
-                    myAdapter.add(split(movieStr, 0));
-                    mMovieArray.add(split(movieStr,1));
+                    myAdapter.add(movieStr);
                 }
 
 

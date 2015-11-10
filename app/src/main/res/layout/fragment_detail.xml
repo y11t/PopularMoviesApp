@@ -47,8 +47,8 @@
         android:layout_height="100dp"
         android:layout_below="@id/release_year"
         android:layout_toEndOf="@id/movie_thumbnail"
-        android:textSize="40dp"
-
+        android:textSize="25dp"
+        android:textStyle="italic"
         android:gravity="center_horizontal"
         android:textColor="#100cef" />
 
