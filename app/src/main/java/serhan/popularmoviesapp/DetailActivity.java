@@ -54,6 +54,12 @@ public class DetailActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
 
             View rootView = inflater.inflate(R.layout.activity_detail, container, false);
+            rootView.setVisibility(rootView.VISIBLE);
+            rootView.setAlpha(0);
+            rootView.animate()
+                    .alpha(1.0f)
+                    .setDuration(800);
+
             String image_url;
             //deneme textview
             TextView textViews = (TextView) rootView.findViewById(R.id.movie_original_title);

@@ -66,7 +66,11 @@ public class MainFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         final View rootView = inflater.inflate(R.layout.fragment_main, container, false);
-
+        rootView.setVisibility(rootView.VISIBLE);
+        rootView.setAlpha(0);
+        rootView.animate()
+                .alpha(1.0f)
+                .setDuration(800);
         gridView = (GridView) rootView.findViewById(R.id.gridview);
         //buraya AsyncTaskin outputu gelicek . cunku oda String[] outputu veriyor.
         //gridView.setAdapter(new MyAdapter(getActivity(), eatFoodyImages));
