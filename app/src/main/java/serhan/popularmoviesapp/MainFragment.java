@@ -12,7 +12,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.GridView;
 import android.widget.Toast;
 
@@ -33,11 +32,21 @@ import java.util.ArrayList;
  */
 public class MainFragment extends Fragment {
 
-    public static String scale;
+
+
     private GridView gridView;
     private MyAdapter myAdapter;
-    private ArrayAdapter<String> mMovieAdapter;
+
+
     private ArrayList<String> mMovieArray;
+    public static String scale;
+    private ArrayList<String> mOverviewArray;
+    public static String ove;
+    private ArrayList<String> mRatingArray;
+    public static String rat;
+    private ArrayList<String> mDateArray;
+    public static String dat;
+
     //private final String API_KEY = "c59e90221f3bbae2b5ec10d1d9d433a1";
     private final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -62,6 +71,10 @@ public class MainFragment extends Fragment {
         //buraya AsyncTaskin outputu gelicek . cunku oda String[] outputu veriyor.
         //gridView.setAdapter(new MyAdapter(getActivity(), eatFoodyImages));
         mMovieArray = new ArrayList<>();
+        mOverviewArray = new ArrayList<>();
+        mRatingArray = new ArrayList<>();
+        mDateArray = new ArrayList<>();
+
         myAdapter = new MyAdapter(getActivity(),new ArrayList<String>());
         gridView.setAdapter(myAdapter);
 
@@ -72,7 +85,11 @@ public class MainFragment extends Fragment {
 
                 String movie = (String) myAdapter.getItem(position);
                 scale =  mMovieArray.get(position);
-                Log.v("SDFSDFJKSDJF",scale);
+                ove =  mOverviewArray.get(position);
+                rat = mRatingArray.get(position);
+                dat = mDateArray.get(position);
+
+                Log.v("SDFSDFJKSDJF", scale);
                 Intent intent = new Intent(getActivity(), DetailActivity.class)
                         .putExtra(Intent.EXTRA_TEXT, movie);
 
@@ -140,17 +157,26 @@ public class MainFragment extends Fragment {
                     getString(R.string.pref_sort_key),
                     getString(R.string.pref_sort_popular));
 
+            if( mOverviewArray != null) {
+                mOverviewArray.clear();
+
+            }
             for(int i = 0; i < movieArray.length(); i++) {
                 // For now, using the format "Day, description, hi/low"
 
                 String poster;
-                String overview;
+                String original_title;
+                String ranking;
+                String release_date;
+                String o;
 
                 // Get the JSON object representing the day
                 JSONObject movieForecast = movieArray.getJSONObject(i);
                 poster = movieForecast.getString(OWM_POSTER);
-                overview = movieForecast.getString(OWM_ORIGINAL_TITLE);
-
+                original_title = movieForecast.getString(OWM_ORIGINAL_TITLE);
+                ranking = movieForecast.getString(OWM_RANKING);
+                release_date = movieForecast.getString(OWM_RELEASE_DATE);
+                o=movieForecast.getString(OWM_OVERVIEW);
                 // description is in a child array called "weather", which is 1 element long.
                 //JSONObject movieObject = movieForecast.getJSONObject(0);
                 //poster = movieObject.getString(OWM_POSTER);
@@ -158,8 +184,11 @@ public class MainFragment extends Fragment {
                 // "temp" when working with temperature.  It confuses everybody.
 
 
+                mOverviewArray.add(o);
+                mRatingArray.add(ranking);
+                mDateArray.add(release_date);
 
-                resultURL[i] = "http://image.tmdb.org/t/p/w185/"+poster+"-"+overview;
+                resultURL[i] = "http://image.tmdb.org/t/p/w185/"+poster+"-"+original_title;
 
             }
 

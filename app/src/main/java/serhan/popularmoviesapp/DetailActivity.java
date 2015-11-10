@@ -58,7 +58,12 @@ public class DetailActivity extends AppCompatActivity {
             //deneme textview
             TextView textViews = (TextView) rootView.findViewById(R.id.movie_original_title);
             textViews.setText(MainFragment.scale);
-
+            TextView textView2 = (TextView) rootView.findViewById(R.id.synopsis);
+            textView2.setText(MainFragment.ove);
+            TextView textView3 = (TextView) rootView.findViewById(R.id.release_year);
+            textView3.setText(MainFragment.dat);
+            TextView textView4 = (TextView) rootView.findViewById(R.id.rating);
+            textView4.setText(MainFragment.rat);
             movie_thumbnail = (ImageView) rootView.findViewById(R.id.movie_thumbnail);
             Intent intent = getActivity().getIntent();
             if (intent != null && intent.hasExtra(Intent.EXTRA_TEXT)) {
