@@ -282,7 +282,7 @@ public class MainFragment extends Fragment {
                     try {
                         reader.close();
                     } catch (final IOException e) {
-                        Log.e(LOG_TAG, "Error closing stream", e);
+                        Log.e(LOG_TAG, "Error closing the stream", e);
                     }
                 }
             }
